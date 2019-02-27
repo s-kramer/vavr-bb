@@ -74,7 +74,7 @@ public class EitherTest {
         assertThat(iWentBad.getLeft()).isEqualTo(CalculationError.OTHER_INSTANCE);
 
         final Either<CalculationError, Integer> iRemainGood = theGoodGuy.flatMap( i -> Either.right(i + 10));
-        assertThat(iWentBad.get()).isEqualTo(52);
+        assertThat(iRemainGood.get()).isEqualTo(52);
     }
 
     private enum CalculationError {
