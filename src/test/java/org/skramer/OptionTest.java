@@ -1,5 +1,6 @@
 package org.skramer;
 
+import io.vavr.control.Either;
 import io.vavr.control.Option;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -92,6 +93,17 @@ public class OptionTest {
         assertThat(optionValue.toJavaOptional()).isEqualTo(Optional.of(VALUE));
         assertThat(optionValue.toJavaList()).isEqualTo(singletonList(VALUE));
         assertThat(optionValue).containsOnly(VALUE);
+    }
+
+    @Test
+    public void canBeTransformedToEither() {
+        final Option<Integer> optionValue = Option.none();
+
+        final Either<String, Integer> toEither = optionValue.toEither("errorCode");
+        assertThat(toEither).isEqualTo(Either.left("errorCode"));
+
+        final Option<Integer> backToOption = toEither.toOption();
+        assertThat(backToOption.isDefined()).isFalse();
     }
 
 }
