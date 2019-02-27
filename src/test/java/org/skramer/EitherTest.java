@@ -17,6 +17,11 @@ public class EitherTest {
     private static final int VALUE = 42;
     private static final int DEFAULT_VALUE = 142;
 
+    private enum CalculationError {
+        INSTANCE,
+        OTHER_INSTANCE
+    }
+
     @Test
     public void eitherCanBeCreated() {
         final Either<CalculationError, Integer> theGoodGuy = Either.right(VALUE);
@@ -54,7 +59,6 @@ public class EitherTest {
         final int getOrElseGetResult = theBadBoy.getOrElseGet(error -> DEFAULT_VALUE);
 
         assertThat(getOrElseGetResult).isEqualTo(DEFAULT_VALUE);
-
     }
 
     @Test
@@ -63,7 +67,6 @@ public class EitherTest {
         final Either<CalculationError, Integer> modified = theGoodGuy.bimap(error -> CalculationError.OTHER_INSTANCE, i -> i + 10);
 
         assertThat(modified.get()).isEqualTo(52);
-
     }
 
     @Test
@@ -75,11 +78,5 @@ public class EitherTest {
 
         final Either<CalculationError, Integer> iRemainGood = theGoodGuy.flatMap( i -> Either.right(i + 10));
         assertThat(iRemainGood.get()).isEqualTo(52);
-    }
-
-    private enum CalculationError {
-        INSTANCE,
-        OTHER_INSTANCE
-
     }
 }
