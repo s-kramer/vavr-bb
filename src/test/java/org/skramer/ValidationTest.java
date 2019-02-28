@@ -14,6 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
  */
 public class ValidationTest {
     private static final int TICKET_PRICE = 42;
+    private static final int BAD_TICKET_PRICE = 43;
     private static final String EVENT_NAME = "cool event";
 
     @Value
@@ -79,8 +80,20 @@ public class ValidationTest {
                 .mapError(this::asJson);
 
         assertThat(validation.isValid()).isTrue();
+        assertThat(validation.get()).isInstanceOf(ValidatedRequest.class);
     }
 
+    @Test
+    public void shouldBeAbleToAccumulateErrors() {
+        Request request = new Request("cardId", BAD_TICKET_PRICE, EVENT_NAME, new Guest(""));
+        final Seq<String> validationErrors = combine(validateCardId(request.getCardId()),
+                validateTicketPrice(request.getTicketPrice(), request.getEventName()),
+                validateGuest(request.getGuest()))
+                .ap(ValidatedRequest::new)
+                .getError();
+
+        assertThat(validationErrors).hasSize(2);
+    }
     private String asJson(Seq<String> errs) {
         return null;
     }
